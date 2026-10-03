@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NextGen Place</title>
+<title>NextGen Place - Login</title>
 
 <!-- Font Awesome Icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -346,7 +346,7 @@ border-radius:50%;
 <div class="hero">
 <div class="tag">🌐 INDIA'S #1 RATED PLATFORM</div>
 <h1>Buy USDT & Trade Crypto <br> With <span class="shining-text">Confidence</span></h1>
-<p>Buy, sell and trade assets on NextGen Place with lightning speed, zero hidden fees, and absolute security[span_4](start_span)[span_4](end_span).</p>
+<p>Buy, sell and trade assets on NextGen Place with lightning speed, zero hidden fees, and absolute security.</p>
 
 <a class="btn primary" onclick="showLogin()"><i class="fa-solid fa-rocket" style="margin-right:8px;"></i> Start Trading</a>
 <a class="btn primary" onclick="showLogin()"><i class="fa-solid fa-lock" style="margin-right:8px;"></i> Login</a>
@@ -365,7 +365,7 @@ border-radius:50%;
 <div class="section">
 <div class="tag">⚡ WHY NEXTGEN</div>
 <h2>Built for Serious Traders</h2>
-<p>Professional grade tools, institutional security[span_5](start_span)[span_5](end_span)</p>
+<p>Professional grade tools, institutional security</p>
 
 <div class="card">
 <h3>🔐 Bank-Grade Security</h3>
@@ -413,14 +413,14 @@ border-radius:50%;
 <footer>
 <h2 style="font-size:24px; color:#dfcaa0;">NEXTGEN PLACE</h2>
 <p style="color:#aaa; font-size:13px; margin-top:8px;">
-India's most transparent INR-to-USDT buying platform and digital asset exchange[span_6](start_span)[span_6](end_span).
+India's most transparent INR-to-USDT buying platform and digital asset exchange.
 </p>
 <div style="text-align:center; padding:20px 0; color:#666; font-size:11px;">
-© 2026 NextGen Place Exchange. All rights reserved[span_7](start_span)[span_7](end_span).
+© 2026 NextGen Place Exchange. All rights reserved.
 </div>
 </footer>
 
-<!-- 🔥 AUTH MODAL (LOGIN & SIGNUP WITH ALL FIELDS) -->
+<!-- 🔥 AUTH MODAL -->
 <div id="authBox" style="
 display:none;
 position:fixed;
@@ -456,7 +456,6 @@ padding: 20px 0;
 
         <h2 id="authTitle" style="font-size:22px; font-weight:800; margin-bottom:15px;">Login</h2>
 
-        <!-- Register Specific Fields Group -->
         <div id="registerFields" style="display:none;">
             <input id="fullname" placeholder="Full Name" style="width:100%; margin-top:10px; padding:12px; border-radius:10px; border:1px solid #333; background:#121212; color:#fff; font-size:13px;">
             <input id="email" type="email" placeholder="Gmail Address" style="width:100%; margin-top:10px; padding:12px; border-radius:10px; border:1px solid #333; background:#121212; color:#fff; font-size:13px;">
@@ -507,7 +506,7 @@ padding: 20px 0;
 <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-firestore-compat.js"></script>
 
 <script>
-// 🔥 REAL FIREBASE CONFIGURATION
+// 🔥 FIREBASE CONFIGURATION
 const firebaseConfig = {
   apiKey: "AIzaSyCRocodkDhKanc-9hTI2xpzfihlh29udio",
   authDomain: "trusted-usdt-seller.firebaseapp.com",
@@ -564,7 +563,7 @@ function closeAuth() {
     clearAlert();
 }
 
-// ✅ REAL FIREBASE REGISTER (WITH NAME, GMAIL, STATE, DISTRICT, PHONE, PASSWORD)
+// ✅ REAL FIREBASE REGISTER
 async function registerUser() {
     const name = document.getElementById("fullname").value.trim();
     const email = document.getElementById("email").value.trim();
@@ -596,7 +595,7 @@ async function registerUser() {
     }
 }
 
-// ✅ REAL FIREBASE LOGIN & REDIRECT TO DASHBOARD (index.html)
+// ✅ REAL FIREBASE LOGIN & REDIRECT TO DASHBOARD.HTML
 async function loginUser() {
     const phone = document.getElementById("phone").value.trim();
     const pass = document.getElementById("password").value.trim();
@@ -613,7 +612,7 @@ async function loginUser() {
             localStorage.setItem("user", phone);
             showAlert("Login Successful 🔥 Redirecting...", "success");
             setTimeout(() => {
-                window.location.href = "./index.html"; // Redirects to dashboard file[span_8](start_span)[span_8](end_span)[span_9](start_span)[span_9](end_span)
+                window.location.href = "dashboard.html"; 
             }, 1000);
         } else {
             showAlert("❌ Galat Phone number ya Password!", "error");
