@@ -51,19 +51,24 @@
 
     <div class="w-full md:max-w-3xl lg:max-w-4xl max-w-md bg-[#121212] flex flex-col justify-between relative shadow-2xl border-x border-gray-900 pb-24">
         
-        <header class="flex justify-between items-center px-4 py-3.5 border-b border-gray-800/80 bg-[#121212] sticky top-0 z-50">
+                <header class="flex justify-between items-center px-4 py-3.5 border-b border-gray-800/80 bg-[#121212] sticky top-0 z-50">
             <div class="flex items-center space-x-2.5">
                 <div class="bg-[#1a1a1a] border border-gray-700 p-1.5 rounded-lg flex items-center justify-center">
                     <span class="text-sm font-black text-emerald-400">⚡</span>
                 </div>
                 <span class="font-extrabold text-lg tracking-wider text-white">NextGen Place</span>
             </div>
-            <button onclick="toggleMenu()" class="text-white p-2 rounded-lg hover:bg-gray-800 focus:outline-none">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-                </svg>
-            </button>
+            
+            <div class="flex items-center space-x-3">
+                <div id="headerUserAvatar" class="w-8 h-8 bg-[#dfcaa0] text-black font-black flex items-center justify-center rounded-full text-xs shadow cursor-pointer" onclick="switchTab('profile')">U</div>
+                <button onclick="toggleMenu()" class="text-white p-2 rounded-lg hover:bg-gray-800 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+            </div>
         </header>
+
 
         <!-- MENU DRAWER -->
         <div id="mobileMenu" class="fixed inset-y-0 right-0 w-72 bg-[#161616] z-50 transform translate-x-full transition-transform duration-300 ease-in-out p-6 shadow-2xl border-l border-gray-800 flex flex-col justify-between overflow-y-auto">
@@ -600,19 +605,29 @@
             alert("UPI ID copied successfully!");
         }
 
-        async function fetchUserData(phone) {
+                async function fetchUserData(phone) {
             try {
                 const doc = await db.collection("users").doc(phone).get();
                 if (doc.exists) {
                     const data = doc.data();
                     const userName = data.name || "User";
                     const userEmail = data.email || phone;
+                    const firstLetter = userName.charAt(0).toUpperCase();
+
+                    // Profile tab ke liye
                     document.getElementById("profileName").innerText = userName;
                     document.getElementById("profileEmail").innerText = userEmail;
-                    document.getElementById("profileAvatar").innerText = userName.charAt(0).toUpperCase();
+                    document.getElementById("profileAvatar").innerText = firstLetter;
+
+                    // Header ke top par circular avatar ke liye
+                    const headerAvatar = document.getElementById("headerUserAvatar");
+                    if(headerAvatar) {
+                        headerAvatar.innerText = firstLetter;
+                    }
                 }
             } catch(e) {}
         }
+
 
         function switchTab(tabName) {
             ['home', 'buy', 'txn', 'faq', 'profile'].forEach(t => {
