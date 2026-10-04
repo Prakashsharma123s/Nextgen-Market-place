@@ -659,11 +659,11 @@
             }
         }
 
-        async function nextStep() {
+                async function nextStep() {
             const usdtVal = parseFloat(document.getElementById('usdtInput').value) || 0;
             if (currentStep === 1) {
                 if (usdtVal < minOrderLimit) {
-                    alert("Minimum order requirement is " + minOrderLimit + " USDT!");
+                    showCustomModal("Notice", "Minimum order requirement is " + minOrderLimit + " USDT!");
                     return;
                 }
             }
@@ -675,7 +675,7 @@
                 const fileInput = document.getElementById('paymentScreenshot');
 
                 if(!usdt || !wallet || !utr) {
-                    alert("Kripya sabhi details bharein!");
+                    showCustomModal("Error", "Kripya sabhi details bharein!");
                     return;
                 }
 
@@ -734,6 +734,7 @@
             currentStep++;
             document.getElementById(`wizard-step-${currentStep}`).classList.remove('hidden');
         }
+
 
         function prevStep() {
             if(currentStep > 1) {
