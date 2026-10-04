@@ -84,7 +84,7 @@
                     <div class="border-t border-gray-800 pt-4">
                         <div class="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2">Support</div>
                         <ul class="space-y-3">
-                            <li><a href="#" onclick="showCustomModal('Telegram Support', 'Connecting you to our official support channel...'); toggleMenu();" class="hover:text-[#dfcaa0] block py-1">Telegram support</a></li>
+                            <li><a href="#" onclick="openTelegramSupport(); toggleMenu();" class="hover:text-[#dfcaa0] block py-1">Telegram support</a></li>
                             <li><a href="#" onclick="switchTab('faq'); toggleMenu();" class="hover:text-[#dfcaa0] block py-1">Help center</a></li>
                             <li><a href="#" onclick="showCustomModal('Report Issue', 'Please describe your problem to our team.'); toggleMenu();" class="hover:text-[#dfcaa0] block py-1">Report an issue</a></li>
                             <li><a href="#" onclick="showCustomModal('Contact Us', 'Reach us at support@nextgenplace.com'); toggleMenu();" class="hover:text-[#dfcaa0] block py-1">Contact us</a></li>
@@ -144,18 +144,19 @@
                     <span>&lt;15 min <strong class="text-white font-semibold">Avg. payout time</strong></span>
                 </div>
 
+                <!-- LIVE RATE CARD (Synced with Admin Panel) -->
                 <div class="bg-[#dfcaa0] text-black rounded-2xl p-5 relative shadow-xl overflow-hidden">
                     <div class="flex justify-between items-center text-[11px] font-bold uppercase tracking-wider text-gray-700 mb-1">
                         <span>Live Buy Rate</span>
                         <span>Published</span>
                     </div>
-                    <div class="text-3xl font-black mb-1">₹91.00 <span class="text-xs font-bold text-gray-800">/ USDT</span></div>
-                    <p class="text-[11px] font-medium text-gray-700 mb-4">per ₹ USDT — same for every buyer</p>
+                    <div class="text-3xl font-black mb-1">₹<span id="displayRate">91.00</span> <span class="text-xs font-bold text-gray-800">/ USDT</span></div>
+                    <p class="text-[11px] font-medium text-gray-700 mb-4">per USDT — same for every buyer</p>
                     
                     <div class="border-t border-black/15 pt-3 space-y-2 text-xs font-semibold text-gray-900">
                         <div class="flex justify-between"><span>Networks</span> <span class="font-bold">TRC20 &nbsp; BEP20</span></div>
-                        <div class="flex justify-between"><span>Min. order</span> <span class="font-bold">20 USDT</span></div>
-                        <div class="flex justify-between"><span>Payment</span> <span class="font-bold">UPI / Bank transfer</span></div>
+                        <div class="flex justify-between"><span>Min. Withdrawal</span> <span class="font-bold"><span id="displayMinWithdrawal">100</span> USDT</span></div>
+                        <div class="flex justify-between"><span>Max. Withdrawal</span> <span class="font-bold"><span id="displayMaxWithdrawal">10000</span> USDT</span></div>
                     </div>
                 </div>
 
@@ -215,7 +216,7 @@
                         <div class="space-y-2">
                             <div class="text-white font-bold uppercase tracking-wider">Support & Legal</div>
                             <ul class="space-y-1.5 text-gray-400">
-                                <li><a href="#" class="hover:text-white">Telegram support</a></li>
+                                <li><a href="#" onclick="openTelegramSupport()" class="hover:text-white">Telegram support</a></li>
                                 <li><a href="#" class="hover:text-white">Terms of service</a></li>
                                 <li><a href="#" class="hover:text-white">Privacy policy</a></li>
                                 <li><a href="#" class="hover:text-white">AML / KYC policy</a></li>
@@ -239,7 +240,7 @@
                     </div>
 
                     <div class="text-[10px] text-gray-600 text-center pt-2">
-                        © 2026 StakedX Exchange. All rights reserved.
+                         © 2026 StakedX Exchange. All rights reserved.
                     </div>
                 </footer>
             </div>
@@ -248,7 +249,7 @@
             <div id="tab-buy" class="p-4 space-y-6 hidden">
                 <div class="bg-[#dfcaa0] text-black p-3.5 rounded-xl flex justify-between items-center shadow-md">
                     <span class="text-[11px] font-black uppercase tracking-wider">Live Buy Rate</span>
-                    <span class="text-lg font-black">₹91.00 <span class="text-xs font-bold">/ USDT</span></span>
+                    <span class="text-lg font-black">₹<span id="wizardRate">91.00</span> <span class="text-xs font-bold">/ USDT</span></span>
                 </div>
 
                 <div class="flex justify-between items-center px-1">
@@ -301,13 +302,13 @@
                     <div class="space-y-1">
                         <label class="text-[10px] font-black text-gray-700 uppercase">UPI ID</label>
                         <div class="flex items-center bg-white border border-gray-300 rounded-xl p-3">
-                            <input type="text" readonly value="9196463267@ptycs" class="w-full bg-transparent font-mono text-sm font-extrabold text-black focus:outline-none">
-                            <button onclick="showCustomModal('Copied', 'UPI ID copied to clipboard!')" class="bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-lg text-xs font-bold">Copy</button>
+                            <input type="text" id="displayUpiId" readonly value="Loading..." class="w-full bg-transparent font-mono text-sm font-extrabold text-black focus:outline-none">
+                            <button onclick="copyUpiId()" class="bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer">Copy</button>
                         </div>
                     </div>
                     <div class="bg-[#f0e6d2] p-4 rounded-xl">
                         <div class="text-[10px] uppercase font-bold text-gray-600">Amount to pay</div>
-                        <div class="text-2xl font-black text-black" id="payFinalINR">₹9,800</div>
+                        <div class="text-2xl font-black text-black" id="payFinalINR">₹0</div>
                     </div>
                 </div>
 
@@ -465,7 +466,7 @@
                         <div class="font-extrabold text-xs">Wallet address</div>
                         <div class="text-[10px] text-gray-400">Manage wallet address</div>
                     </button>
-                    <button onclick="showCustomModal('Support', 'Contact our 24/7 Telegram assistance.')" class="bg-[#181818] border border-gray-800 p-4 rounded-xl text-left space-y-2 hover:border-[#dfcaa0]">
+                    <button onclick="openTelegramSupport()" class="bg-[#181818] border border-gray-800 p-4 rounded-xl text-left space-y-2 hover:border-[#dfcaa0] cursor-pointer">
                         <div class="text-xl"><i class="fa-solid fa-headset text-[#dfcaa0]"></i></div>
                         <div class="font-extrabold text-xs">Support</div>
                         <div class="text-[10px] text-gray-400">Telegram help</div>
@@ -531,6 +532,9 @@
         let currentStep = 1;
         const totalSteps = 5;
         let selectedNetworkType = "TRC20";
+        let liveRate = 91.00;
+        let adminUpiId = "9196463267@ptycs";
+        let telegramSupportLink = "https://t.me/nextgen_support";
 
         window.onload = async function() {
             const loggedInUserPhone = localStorage.getItem("user");
@@ -538,9 +542,48 @@
                 window.location.href = "index.html";
                 return;
             }
+            fetchGlobalSettings();
             fetchUserData(loggedInUserPhone);
             fetchUserTransactions(loggedInUserPhone);
         };
+
+        async function fetchGlobalSettings() {
+            try {
+                const doc = await db.collection("settings").doc("global").get();
+                if (doc.exists) {
+                    const data = doc.data();
+                    if(data.rate) {
+                        liveRate = data.rate;
+                        document.getElementById("displayRate").innerText = liveRate.toFixed(2);
+                        document.getElementById("wizardRate").innerText = liveRate.toFixed(2);
+                    }
+                    if(data.minWithdrawal) {
+                        document.getElementById("displayMinWithdrawal").innerText = data.minWithdrawal;
+                    }
+                    if(data.maxWithdrawal) {
+                        document.getElementById("displayMaxWithdrawal").innerText = data.maxWithdrawal;
+                    }
+                    if(data.upi) {
+                        adminUpiId = data.upi;
+                        document.getElementById("displayUpiId").value = adminUpiId;
+                    }
+                    if(data.telegram) {
+                        telegramSupportLink = data.telegram;
+                    }
+                }
+            } catch(e) {}
+        }
+
+        function openTelegramSupport() {
+            window.open(telegramSupportLink, '_blank');
+        }
+
+        function copyUpiId() {
+            const upiField = document.getElementById("displayUpiId");
+            upiField.select();
+            navigator.clipboard.writeText(upiField.value);
+            alert("UPI ID copied successfully!");
+        }
 
         async function fetchUserData(phone) {
             try {
@@ -566,15 +609,12 @@
                     nav.classList.add('text-gray-400');
                 }
             });
-            const selectedTab = document.getElementById(`tab-${tabName}`);
-            const selectedNav = document.getElementById(`nav-${tabName}`);
-            if(selectedTab) selectedTab.classList.remove('hidden');
-            if(selectedNav) {
-                selectedNav.classList.add('text-[#dfcaa0]');
-                selectedNav.classList.remove('text-gray-400');
-            }
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+            document.getElementById(`nav-${tabName}`).classList.add('text-[#dfcaa0]');
+            document.getElementById(`nav-${tabName}`).classList.remove('text-gray-400');
             window.scrollTo({ top: 0, behavior: 'smooth' });
             if(tabName === 'txn') fetchUserTransactions(localStorage.getItem("user"));
+            if(tabName === 'home' || tabName === 'buy') fetchGlobalSettings();
         }
 
         function toggleMenu() {
@@ -583,7 +623,7 @@
 
         function calculateINR() {
             const val = parseFloat(document.getElementById('usdtInput').value) || 0;
-            const totalINR = val * 91.00;
+            const totalINR = val * liveRate;
             document.getElementById('inrOutput').innerText = '₹' + totalINR.toLocaleString('en-IN');
             document.getElementById('payFinalINR').innerText = '₹' + totalINR.toLocaleString('en-IN');
             document.getElementById('receiveAmount').innerText = (val > 1 ? val - 1 : 0).toFixed(2);
@@ -592,11 +632,11 @@
         function selectNetwork(net) {
             selectedNetworkType = net;
             if(net === 'TRC20') {
-                document.getElementById('net-trc').className = "p-3 border-2 border-black rounded-xl font-bold text-xs flex items-center justify-center space-x-2 bg-white shadow";
-                document.getElementById('net-bep').className = "p-3 border border-gray-400 rounded-xl font-bold text-xs flex items-center justify-center space-x-2 bg-white/60";
+                document.getElementById('net-trc').className = "p-3 border-2 border-black rounded-xl font-bold text-xs bg-white";
+                document.getElementById('net-bep').className = "p-3 border border-gray-400 rounded-xl font-bold text-xs bg-white/60";
             } else {
-                document.getElementById('net-bep').className = "p-3 border-2 border-black rounded-xl font-bold text-xs flex items-center justify-center space-x-2 bg-white shadow";
-                document.getElementById('net-trc').className = "p-3 border border-gray-400 rounded-xl font-bold text-xs flex items-center justify-center space-x-2 bg-white/60";
+                document.getElementById('net-bep').className = "p-3 border-2 border-black rounded-xl font-bold text-xs bg-white";
+                document.getElementById('net-trc').className = "p-3 border border-gray-400 rounded-xl font-bold text-xs bg-white/60";
             }
         }
 
