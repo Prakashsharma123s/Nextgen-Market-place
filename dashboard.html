@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NextGen Place - India's #1 Rated USDT Buying Platform</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
         body {
@@ -319,7 +320,7 @@
                     </div>
                     <div class="space-y-1">
                         <label class="text-[10px] font-black text-gray-700 uppercase">Wallet Address (TRC20)</label>
-                        <input type="text" placeholder="Enter your TRC20 wallet address" class="w-full p-3.5 bg-white border border-gray-300 rounded-xl text-xs font-mono font-bold text-black focus:outline-none">
+                        <input type="text" id="walletAddressInput" placeholder="Enter your TRC20 wallet address" class="w-full p-3.5 bg-white border border-gray-300 rounded-xl text-xs font-mono font-bold text-black focus:outline-none">
                     </div>
                 </div>
 
@@ -389,10 +390,9 @@
                     <button class="px-4 py-2 bg-[#181818] border border-gray-800 text-gray-400 rounded-full">Rejected</button>
                 </div>
 
-                <div class="bg-[#181818] border border-gray-800 p-8 rounded-2xl text-center space-y-3 shadow-inner">
-                    <div class="w-3 h-3 bg-gray-600 mx-auto rounded-full"></div>
-                    <div class="text-[10px] text-gray-400 font-bold tracking-widest uppercase">RECENT ACTIVITY</div>
-                    <p class="text-xs text-gray-500 font-medium">No orders yet — your first buy will show up here.</p>
+                <!-- LIVE TRANSACTIONS CONTAINER -->
+                <div id="userTxnList" class="space-y-3">
+                    <div class="bg-[#181818] border border-gray-800 p-6 rounded-2xl text-center text-xs text-gray-400">Loading your transactions...</div>
                 </div>
             </div>
 
@@ -441,38 +441,38 @@
                 </div>
 
                 <div class="flex flex-col items-center bg-[#181818] p-6 rounded-2xl border border-gray-800 space-y-3 shadow-md">
-                    <div class="w-16 h-16 bg-[#dfcaa0] text-black font-black flex items-center justify-center rounded-full text-2xl shadow">H</div>
+                    <div id="profileAvatar" class="w-16 h-16 bg-[#dfcaa0] text-black font-black flex items-center justify-center rounded-full text-2xl shadow">H</div>
                     <div class="text-center">
-                        <div class="font-black text-base">Hahajah</div>
+                        <div class="font-black text-base" id="profileName">Hahajah</div>
                         <div class="text-xs text-emerald-400 font-semibold mt-0.5">✔ Verified account</div>
-                        <div class="text-[11px] text-gray-400 mt-1 font-mono">gghy@gmail.com</div>
+                        <div class="text-[11px] text-gray-400 mt-1 font-mono" id="profileEmail">gghy@gmail.com</div>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-3">
                     <button onclick="switchTab('buy')" class="bg-[#181818] border border-gray-800 p-4 rounded-xl text-left space-y-2 hover:border-[#dfcaa0]">
-                        <div class="text-xl">🛒</div>
+                        <div class="text-xl"><i class="fa-solid fa-cart-shopping text-[#dfcaa0]"></i></div>
                         <div class="font-extrabold text-xs">Buy USDT</div>
                         <div class="text-[10px] text-gray-400">Pay INR</div>
                     </button>
                     <button onclick="switchTab('txn')" class="bg-[#181818] border border-gray-800 p-4 rounded-xl text-left space-y-2 hover:border-[#dfcaa0]">
-                        <div class="text-xl">📋</div>
+                        <div class="text-xl"><i class="fa-solid fa-list-check text-[#dfcaa0]"></i></div>
                         <div class="font-extrabold text-xs">Transactions</div>
                         <div class="text-[10px] text-gray-400">Track every order</div>
                     </button>
                     <button onclick="showCustomModal('Wallet Address', 'Manage your saved crypto wallet addresses.')" class="bg-[#181818] border border-gray-800 p-4 rounded-xl text-left space-y-2 hover:border-[#dfcaa0]">
-                        <div class="text-xl">👛</div>
+                        <div class="text-xl"><i class="fa-solid fa-wallet text-[#dfcaa0]"></i></div>
                         <div class="font-extrabold text-xs">Wallet address</div>
                         <div class="text-[10px] text-gray-400">Manage wallet address</div>
                     </button>
                     <button onclick="showCustomModal('Support', 'Contact our 24/7 Telegram assistance.')" class="bg-[#181818] border border-gray-800 p-4 rounded-xl text-left space-y-2 hover:border-[#dfcaa0]">
-                        <div class="text-xl">📞</div>
+                        <div class="text-xl"><i class="fa-solid fa-headset text-[#dfcaa0]"></i></div>
                         <div class="font-extrabold text-xs">Support</div>
                         <div class="text-[10px] text-gray-400">Telegram help</div>
                     </button>
                 </div>
 
-                <button onclick="showCustomModal('Sign Out', 'You have been successfully signed out.')" class="w-full py-3.5 bg-red-500/10 hover:bg-red-500/20 text-red-500 font-extrabold rounded-xl text-xs border border-red-500/20 shadow">
+                <button onclick="logoutUser()" class="w-full py-3.5 bg-red-500/10 hover:bg-red-500/20 text-red-500 font-extrabold rounded-xl text-xs border border-red-500/20 shadow">
                     ↳ Sign out
                 </button>
             </div>
@@ -481,23 +481,23 @@
 
         <nav class="fixed bottom-0 w-full md:max-w-3xl lg:max-w-4xl max-w-md bg-[#121212] border-t border-gray-800 flex justify-around py-3 z-50">
             <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center text-[#dfcaa0] transition">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                <i class="fa-solid fa-house text-lg"></i>
                 <span class="text-[10px] mt-1 font-bold">Home</span>
             </button>
             <button onclick="switchTab('buy')" id="nav-buy" class="flex flex-col items-center text-gray-400 hover:text-white transition">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                <i class="fa-solid fa-cart-shopping text-lg"></i>
                 <span class="text-[10px] mt-1 font-bold">Buy</span>
             </button>
             <button onclick="switchTab('txn')" id="nav-txn" class="flex flex-col items-center text-gray-400 hover:text-white transition">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                <i class="fa-solid fa-list-check text-lg"></i>
                 <span class="text-[10px] mt-1 font-bold">Txns</span>
             </button>
             <button onclick="switchTab('faq')" id="nav-faq" class="flex flex-col items-center text-gray-400 hover:text-white transition">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <i class="fa-solid fa-circle-question text-lg"></i>
                 <span class="text-[10px] mt-1 font-bold">FAQ</span>
             </button>
             <button onclick="switchTab('profile')" id="nav-profile" class="flex flex-col items-center text-gray-400 hover:text-white transition">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                <i class="fa-solid fa-user text-lg"></i>
                 <span class="text-[10px] mt-1 font-bold">Profile</span>
             </button>
         </nav>
@@ -513,9 +513,48 @@
         </div>
     </div>
 
+    <!-- FIREBASE CDN -->
+    <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-firestore-compat.js"></script>
+
     <script>
+        // 🔥 FIREBASE CONFIGURATION
+        const firebaseConfig = {
+          apiKey: "AIzaSyCRocodkDhKanc-9hTI2xpzfihlh29udio",
+          authDomain: "trusted-usdt-seller.firebaseapp.com",
+          projectId: "trusted-usdt-seller",
+          appId: "1:667426874776:web:2c058a8b06a985e390b7ed"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
         let currentStep = 1;
         const totalSteps = 5;
+        let selectedNetworkType = "TRC20";
+
+        window.onload = async function() {
+            const loggedInUserPhone = localStorage.getItem("user");
+            if (!loggedInUserPhone) {
+                window.location.href = "index.html";
+                return;
+            }
+            fetchUserData(loggedInUserPhone);
+            fetchUserTransactions(loggedInUserPhone);
+        };
+
+        async function fetchUserData(phone) {
+            try {
+                const doc = await db.collection("users").doc(phone).get();
+                if (doc.exists) {
+                    const data = doc.data();
+                    const userName = data.name || "User";
+                    const userEmail = data.email || phone;
+                    document.getElementById("profileName").innerText = userName;
+                    document.getElementById("profileEmail").innerText = userEmail;
+                    document.getElementById("profileAvatar").innerText = userName.charAt(0).toUpperCase();
+                }
+            } catch(e) {}
+        }
 
         function switchTab(tabName) {
             ['home', 'buy', 'txn', 'faq', 'profile'].forEach(t => {
@@ -535,6 +574,7 @@
                 selectedNav.classList.remove('text-gray-400');
             }
             window.scrollTo({ top: 0, behavior: 'smooth' });
+            if(tabName === 'txn') fetchUserTransactions(localStorage.getItem("user"));
         }
 
         function toggleMenu() {
@@ -550,6 +590,7 @@
         }
 
         function selectNetwork(net) {
+            selectedNetworkType = net;
             if(net === 'TRC20') {
                 document.getElementById('net-trc').className = "p-3 border-2 border-black rounded-xl font-bold text-xs flex items-center justify-center space-x-2 bg-white shadow";
                 document.getElementById('net-bep').className = "p-3 border border-gray-400 rounded-xl font-bold text-xs flex items-center justify-center space-x-2 bg-white/60";
@@ -559,42 +600,117 @@
             }
         }
 
-        function nextStep() {
-            document.getElementById('wizard-buttons').classList.add('hidden');
-            document.getElementById('wizard-loader').classList.remove('hidden');
+        async function nextStep() {
+            if (currentStep === 4) {
+                const usdt = document.getElementById('usdtInput').value;
+                const wallet = document.getElementById('walletAddressInput').value;
+                const utr = document.getElementById('utrInput').value;
+                const fileInput = document.getElementById('paymentScreenshot');
 
-            setTimeout(() => {
-                document.getElementById('wizard-loader').classList.add('hidden');
-                document.getElementById('wizard-buttons').classList.remove('hidden');
-
-                if(currentStep < totalSteps) {
-                    document.getElementById(`wizard-step-${currentStep}`).classList.add('hidden');
-                    document.getElementById(`s-ind-${currentStep}`).classList.remove('bg-[#dfcaa0]', 'text-black');
-                    document.getElementById(`s-ind-${currentStep}`).classList.add('bg-gray-800', 'text-gray-400');
-                    
-                    currentStep++;
-                    
-                    document.getElementById(`wizard-step-${currentStep}`).classList.remove('hidden');
-                    document.getElementById(`s-ind-${currentStep}`).classList.remove('bg-gray-800', 'text-gray-400');
-                    document.getElementById(`s-ind-${currentStep}`).classList.add('bg-[#dfcaa0]', 'text-black');
-                } else {
-                    showCustomModal('Order Finalized', 'Your order along with UTR and payment screenshot has been submitted for admin panel review.');
+                if(!usdt || !wallet || !utr) {
+                    alert("Kripya sabhi details bharein!");
+                    return;
                 }
-            }, 1000);
+
+                document.getElementById('wizard-buttons').classList.add('hidden');
+                document.getElementById('wizard-loader').classList.remove('hidden');
+
+                let screenshotUrl = "";
+                if (fileInput.files && fileInput.files[0]) {
+                    const reader = new FileReader();
+                    reader.readAsDataURL(fileInput.files[0]);
+                    await new Promise(resolve => {
+                        reader.onload = () => { screenshotUrl = reader.result; resolve(); };
+                    });
+                }
+
+                const phone = localStorage.getItem("user");
+                const userDoc = await db.collection("users").doc(phone).get();
+                const userData = userDoc.exists ? userDoc.data() : {};
+
+                try {
+                    await db.collection("orders").add({
+                        phone: phone,
+                        name: userData.name || "User",
+                        email: userData.email || phone,
+                        usdtAmount: usdt,
+                        network: selectedNetworkType,
+                        walletAddress: wallet,
+                        utr: utr,
+                        screenshot: screenshotUrl,
+                        status: "Pending",
+                        createdAt: new Date().toISOString()
+                    });
+                } catch(e) {}
+
+                setTimeout(() => {
+                    document.getElementById('wizard-loader').classList.add('hidden');
+                    document.getElementById('wizard-buttons').classList.remove('hidden');
+                    document.getElementById(`wizard-step-${currentStep}`).classList.add('hidden');
+                    currentStep++;
+                    document.getElementById(`wizard-step-${currentStep}`).classList.remove('hidden');
+                    document.getElementById('btn-continue').innerText = "Done";
+                }, 1000);
+                return;
+            }
+
+            if (currentStep >= totalSteps) {
+                switchTab('txn');
+                currentStep = 1;
+                document.getElementById('wizard-step-5').classList.add('hidden');
+                document.getElementById('wizard-step-1').classList.remove('hidden');
+                document.getElementById('btn-continue').innerText = "Continue →";
+                return;
+            }
+
+            document.getElementById(`wizard-step-${currentStep}`).classList.add('hidden');
+            currentStep++;
+            document.getElementById(`wizard-step-${currentStep}`).classList.remove('hidden');
         }
 
         function prevStep() {
             if(currentStep > 1) {
                 document.getElementById(`wizard-step-${currentStep}`).classList.add('hidden');
-                document.getElementById(`s-ind-${currentStep}`).classList.remove('bg-[#dfcaa0]', 'text-black');
-                document.getElementById(`s-ind-${currentStep}`).classList.add('bg-gray-800', 'text-gray-400');
-                
                 currentStep--;
-                
                 document.getElementById(`wizard-step-${currentStep}`).classList.remove('hidden');
-                document.getElementById(`s-ind-${currentStep}`).classList.remove('bg-gray-800', 'text-gray-400');
-                document.getElementById(`s-ind-${currentStep}`).classList.add('bg-[#dfcaa0]', 'text-black');
             }
+        }
+
+        async function fetchUserTransactions(phone) {
+            const list = document.getElementById("userTxnList");
+            list.innerHTML = `<div class="bg-[#181818] p-4 rounded-xl text-center text-xs text-gray-400">Loading your transactions...</div>`;
+            try {
+                const snapshot = await db.collection("orders").where("phone", "==", phone).get();
+                if(snapshot.empty) {
+                    list.innerHTML = `<div class="bg-[#181818] p-4 rounded-xl text-center text-xs text-gray-400">No orders yet.</div>`;
+                    return;
+                }
+                let html = "";
+                snapshot.forEach(doc => {
+                    const d = doc.data();
+                    let statusColor = "text-amber-400 bg-amber-400/10 border-amber-400/20";
+                    if(d.status === "Approved") statusColor = "text-emerald-400 bg-emerald-400/10 border-emerald-400/20";
+                    if(d.status === "Rejected") statusColor = "text-red-400 bg-red-400/10 border-red-400/20";
+
+                    html += `
+                    <div class="bg-[#181818] border border-gray-800 p-4 rounded-2xl space-y-2">
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="font-bold text-gray-300">USDT: ${d.usdtAmount} (${d.network})</span>
+                            <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold border ${statusColor}">${d.status}</span>
+                        </div>
+                        <div class="text-[11px] text-gray-400 font-mono">UTR: ${d.utr}</div>
+                        <div class="text-[10px] text-gray-500">Wallet: ${d.walletAddress}</div>
+                    </div>`;
+                });
+                list.innerHTML = html;
+            } catch(e) {
+                list.innerHTML = `<div class="bg-[#181818] p-4 rounded-xl text-center text-xs text-red-400">Error loading orders</div>`;
+            }
+        }
+
+        function logoutUser() {
+            localStorage.removeItem("user");
+            window.location.href = "index.html";
         }
 
         function showCustomModal(title, desc) {
