@@ -144,7 +144,7 @@
                     <span>&lt;15 min <strong class="text-white font-semibold">Avg. payout time</strong></span>
                 </div>
 
-                <!-- LIVE RATE CARD (Synced with Admin Panel) -->
+                <!-- LIVE RATE CARD -->
                 <div class="bg-[#dfcaa0] text-black rounded-2xl p-5 relative shadow-xl overflow-hidden">
                     <div class="flex justify-between items-center text-[11px] font-bold uppercase tracking-wider text-gray-700 mb-1">
                         <span>Live Buy Rate</span>
@@ -155,7 +155,7 @@
                     
                     <div class="border-t border-black/15 pt-3 space-y-2 text-xs font-semibold text-gray-900">
                         <div class="flex justify-between"><span>Networks</span> <span class="font-bold">TRC20 &nbsp; BEP20</span></div>
-                        <div class="flex justify-between"><span>Min. Withdrawal</span> <span class="font-bold"><span id="displayMinWithdrawal">100</span> USDT</span></div>
+                        <div class="flex justify-between"><span>Min. Withdrawal</span> <span class="font-bold"><span id="displayMinWithdrawal">20</span> USDT</span></div>
                         <div class="flex justify-between"><span>Max. Withdrawal</span> <span class="font-bold"><span id="displayMaxWithdrawal">10000</span> USDT</span></div>
                     </div>
                 </div>
@@ -271,7 +271,7 @@
                     <div class="space-y-1">
                         <label class="text-[10px] font-black text-gray-700 uppercase tracking-wider">USDT Amount</label>
                         <input type="number" id="usdtInput" oninput="calculateINR()" placeholder="e.g., 100" class="w-full p-3.5 bg-white border border-gray-300 rounded-xl font-bold text-black text-sm focus:outline-none">
-                        <div class="text-[11px] text-gray-700 font-medium">Minimum order: 20 USDT</div>
+                        <div class="text-[11px] text-gray-700 font-medium">Minimum order: <span id="displayMinOrder">20</span> USDT</div>
                     </div>
 
                     <div class="bg-[#f0e6d2] p-4 rounded-xl border border-amber-900/10">
@@ -535,6 +535,7 @@
         let liveRate = 91.00;
         let adminUpiId = "9196463267@ptycs";
         let telegramSupportLink = "https://t.me/nextgen_support";
+        let minOrderLimit = 20;
 
         window.onload = async function() {
             const loggedInUserPhone = localStorage.getItem("user");
@@ -542,7 +543,7 @@
                 window.location.href = "index.html";
                 return;
             }
-            fetchGlobalSettings();
+            await fetchGlobalSettings();
             fetchUserData(loggedInUserPhone);
             fetchUserTransactions(loggedInUserPhone);
         };
@@ -563,6 +564,10 @@
                     if(data.maxWithdrawal) {
                         document.getElementById("displayMaxWithdrawal").innerText = data.maxWithdrawal;
                     }
+                    if(data.minOrder) {
+                        minOrderLimit = data.minOrder;
+                        document.getElementById("displayMinOrder").innerText = minOrderLimit;
+                    }
                     if(data.upi) {
                         adminUpiId = data.upi;
                         document.getElementById("displayUpiId").value = adminUpiId;
@@ -575,7 +580,11 @@
         }
 
         function openTelegramSupport() {
-            window.open(telegramSupportLink, '_blank');
+            if(telegramSupportLink) {
+                window.open(telegramSupportLink, '_blank');
+            } else {
+                alert("Support link not available");
+            }
         }
 
         function copyUpiId() {
@@ -632,15 +641,23 @@
         function selectNetwork(net) {
             selectedNetworkType = net;
             if(net === 'TRC20') {
-                document.getElementById('net-trc').className = "p-3 border-2 border-black rounded-xl font-bold text-xs bg-white";
-                document.getElementById('net-bep').className = "p-3 border border-gray-400 rounded-xl font-bold text-xs bg-white/60";
+                document.getElementById('net-trc').className = "p-3 border-2 border-black rounded-xl font-bold text-xs flex items-center justify-center space-x-2 bg-white";
+                document.getElementById('net-bep').className = "p-3 border border-gray-400 rounded-xl font-bold text-xs flex items-center justify-center space-x-2 bg-white/60";
             } else {
-                document.getElementById('net-bep').className = "p-3 border-2 border-black rounded-xl font-bold text-xs bg-white";
-                document.getElementById('net-trc').className = "p-3 border border-gray-400 rounded-xl font-bold text-xs bg-white/60";
+                document.getElementById('net-bep').className = "p-3 border-2 border-black rounded-xl font-bold text-xs flex items-center justify-center space-x-2 bg-white";
+                document.getElementById('net-trc').className = "p-3 border border-gray-400 rounded-xl font-bold text-xs flex items-center justify-center space-x-2 bg-white/60";
             }
         }
 
         async function nextStep() {
+            const usdtVal = parseFloat(document.getElementById('usdtInput').value) || 0;
+            if (currentStep === 1) {
+                if (usdtVal < minOrderLimit) {
+                    alert("Minimum order requirement is " + minOrderLimit + " USDT!");
+                    return;
+                }
+            }
+
             if (currentStep === 4) {
                 const usdt = document.getElementById('usdtInput').value;
                 const wallet = document.getElementById('walletAddressInput').value;
@@ -768,3 +785,5 @@
     </script>
 </body>
 </html>
+
+      
