@@ -573,7 +573,7 @@ async function registerUser() {
     const pass = document.getElementById("password").value.trim();
 
     if (!name || !email || !state || !district || !phone || !pass) {
-        showAlert("⚠️ Kripya sabhi fields bharein!", "error");
+        showAlert("Please fill in all fields!", "error");
         return;
     }
 
@@ -588,10 +588,10 @@ async function registerUser() {
             createdAt: new Date().toISOString()
         });
 
-        showAlert("Account Created Successfully ✅", "success");
+        showAlert("Account Created Successfully ", "success");
         setTimeout(() => { showLogin(); }, 1200);
     } catch (err) {
-        showAlert("❌ Error saving to database!", "error");
+        showAlert(" Error saving to database!", "error");
     }
 }
 
@@ -601,7 +601,7 @@ async function loginUser() {
     const pass = document.getElementById("password").value.trim();
 
     if (!phone || !pass) {
-        showAlert("⚠️ Phone aur password dalein!", "error");
+        showAlert("Enter phone and password!", "error");
         return;
     }
 
@@ -610,15 +610,15 @@ async function loginUser() {
 
         if (userRef.exists && userRef.data().password === pass) {
             localStorage.setItem("user", phone);
-            showAlert("Login Successful 🔥 Redirecting...", "success");
+            showAlert("Login Successful  Redirecting...", "success");
             setTimeout(() => {
                 window.location.href = "dashboard.html"; 
             }, 1000);
         } else {
-            showAlert("❌ Galat Phone number ya Password!", "error");
+            showAlert("Wrong Phone Number or Password!", "error");
         }
     } catch (err) {
-        showAlert("⚠️ Network connection error!", "error");
+        showAlert(" Network connection error!", "error");
     }
 }
 </script>
