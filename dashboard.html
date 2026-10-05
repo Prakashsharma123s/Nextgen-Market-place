@@ -313,17 +313,24 @@
                 </div>
 
                 <div id="wizard-step-3" class="bg-[#dfcaa0] text-black rounded-t-3xl p-6 pt-8 space-y-4 shadow-2xl relative scalloped-top hidden">
-                    <h2 class="text-xl font-black">Where should USDT land?</h2>
-                    <p class="text-xs text-gray-800 font-medium">Choose your own wallet, or hold it in your StakedX wallet and withdraw whenever you like.</p>
-                    <div class="grid grid-cols-2 gap-3">
-                        <button class="p-3 bg-white border-2 border-black rounded-xl font-extrabold text-xs text-center shadow">My own wallet</button>
-                        <button class="p-3 bg-white/60 border border-gray-400 rounded-xl font-bold text-xs text-center">StakedX Wallet</button>
-                    </div>
-                    <div class="space-y-1">
-                        <label class="text-[10px] font-black text-gray-700 uppercase">Wallet Address (TRC20)</label>
-                        <input type="text" id="walletAddressInput" placeholder="Enter your TRC20 wallet address" class="w-full p-3.5 bg-white border border-gray-300 rounded-xl text-xs font-mono font-bold text-black focus:outline-none">
-                    </div>
-                </div>
+    <h2 class="text-xl font-black">Where should USDT land?</h2>
+    <p class="text-xs text-gray-800 font-medium">Choose your own wallet, or hold it in your StakedX wallet and withdraw whenever you like.</p>
+    <div class="grid grid-cols-2 gap-3">
+        <button class="p-3 bg-white border-2 border-black rounded-xl font-extrabold text-xs text-center shadow">My own wallet</button>
+        <button class="p-3 bg-white/60 border border-gray-400 rounded-xl font-bold text-xs text-center">StakedX Wallet</button>
+    </div>
+    <div class="space-y-1">
+        <label class="text-[10px] font-black text-gray-700 uppercase">Wallet Address (TRC20)</label>
+        <input type="text" id="walletAddressInput" placeholder="Enter your TRC20 wallet address" class="w-full p-3.5 bg-white border border-gray-300 rounded-xl text-xs font-mono font-bold text-black focus:outline-none">
+    </div>
+
+    <!-- Naya Extra Box: Kitna USDT receive hoga -->
+    <div class="bg-[#f0e6d2] p-4 rounded-xl border border-amber-900/10 space-y-1">
+        <div class="text-[10px] uppercase font-bold text-gray-600">You Will Receive (After Fee)</div>
+        <div class="text-2xl font-black text-black"><span id="step3ReceiveAmount">0.00</span> USDT</div>
+    </div>
+</div>
+
 
                 <!-- STEP 4 WITH UTR & SCREENSHOT UPLOAD -->
                 <div id="wizard-step-4" class="bg-[#dfcaa0] text-black rounded-t-3xl p-6 pt-8 space-y-4 shadow-2xl relative scalloped-top hidden">
@@ -661,7 +668,7 @@
             calculateINR();
         }
 
-        function calculateINR() {
+                function calculateINR() {
             const val = parseFloat(document.getElementById('usdtInput').value) || 0;
             const totalINR = val * liveRate;
             document.getElementById('inrOutput').innerText = '₹' + totalINR.toLocaleString('en-IN');
@@ -672,11 +679,18 @@
 
             document.getElementById('receiveAmount').innerText = receive.toFixed(2);
             
+            // 🟢 Ye wali line step 3 ke box ko update karegi
+            const step3Receive = document.getElementById('step3ReceiveAmount');
+            if(step3Receive) {
+                step3Receive.innerText = receive.toFixed(2);
+            }
+            
             const feeDisplay = document.getElementById('networkFeeDisplay');
             if(feeDisplay) {
                 feeDisplay.innerText = fee.toFixed(2) + ' USDT';
             }
         }
+
 
         async function nextStep() {
             const usdtVal = parseFloat(document.getElementById('usdtInput').value) || 0;
