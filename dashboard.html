@@ -385,11 +385,12 @@
                 </div>
 
                 <div class="flex space-x-2 overflow-x-auto pb-1 text-xs">
-                    <button class="px-4 py-2 bg-[#dfcaa0] text-black font-extrabold rounded-full">All</button>
-                    <button class="px-4 py-2 bg-[#181818] border border-gray-800 text-gray-400 rounded-full">Completed</button>
-                    <button class="px-4 py-2 bg-[#181818] border border-gray-800 text-gray-400 rounded-full">Pending</button>
-                    <button class="px-4 py-2 bg-[#181818] border border-gray-800 text-gray-400 rounded-full">Rejected</button>
-                </div>
+    <button onclick="filterTransactions('All')" id="filter-all" class="px-4 py-2 bg-[#dfcaa0] text-black font-extrabold rounded-full">All</button>
+    <button onclick="filterTransactions('Completed')" id="filter-completed" class="px-4 py-2 bg-[#181818] border border-gray-800 text-gray-400 rounded-full">Completed</button>
+    <button onclick="filterTransactions('Pending')" id="filter-pending" class="px-4 py-2 bg-[#181818] border border-gray-800 text-gray-400 rounded-full">Pending</button>
+    <button onclick="filterTransactions('Rejected')" id="filter-rejected" class="px-4 py-2 bg-[#181818] border border-gray-800 text-gray-400 rounded-full">Rejected</button>
+</div>
+
 
                 <!-- LIVE TRANSACTIONS CONTAINER -->
                 <div id="userTxnList" class="space-y-3">
@@ -762,6 +763,9 @@
             }
         }
 
+                let allUserOrders = [];
+        let currentFilter = 'All';
+
         async function fetchUserTransactions(phone) {
             const list = document.getElementById("userTxnList");
             list.innerHTML = `<div class="bg-[#181818] p-4 rounded-xl text-center text-xs text-gray-400">Loading your transactions...</div>`;
@@ -769,29 +773,93 @@
                 const snapshot = await db.collection("orders").where("phone", "==", phone).get();
                 if(snapshot.empty) {
                     list.innerHTML = `<div class="bg-[#181818] p-4 rounded-xl text-center text-xs text-gray-400">No orders yet.</div>`;
+                    updateTxnCounters([]);
                     return;
                 }
-                let html = "";
+                
+                allUserOrders = [];
                 snapshot.forEach(doc => {
-                    const d = doc.data();
-                    let statusColor = "text-amber-400 bg-amber-400/10 border-amber-400/20";
-                    if(d.status === "Approved") statusColor = "text-emerald-400 bg-emerald-400/10 border-emerald-400/20";
-                    if(d.status === "Rejected") statusColor = "text-red-400 bg-red-400/10 border-red-400/20";
-
-                    html += `
-                    <div class="bg-[#181818] border border-gray-800 p-4 rounded-2xl space-y-2">
-                        <div class="flex justify-between items-center text-xs">
-                            <span class="font-bold text-gray-300">USDT: ${d.usdtAmount} (${d.network})</span>
-                            <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold border ${statusColor}">${d.status}</span>
-                        </div>
-                        <div class="text-[11px] text-gray-400 font-mono">UTR: ${d.utr}</div>
-                        <div class="text-[10px] text-gray-500">Wallet: ${d.walletAddress}</div>
-                    </div>`;
+                    allUserOrders.push(doc.data());
                 });
-                list.innerHTML = html;
+
+                updateTxnCounters(allUserOrders);
+                renderFilteredTransactions(currentFilter);
             } catch(e) {
                 list.innerHTML = `<div class="bg-[#181818] p-4 rounded-xl text-center text-xs text-red-400">Error loading orders</div>`;
             }
+        }
+
+        function updateTxnCounters(orders) {
+            const total = orders.length;
+            const completed = orders.filter(o => o.status === "Approved").length;
+            const pending = orders.filter(o => o.status === "Pending").length;
+
+            const counters = document.querySelectorAll("#tab-txn .grid-cols-3 div .text-lg");
+            if(counters.length >= 3) {
+                counters[0].innerText = total;
+                counters[1].innerText = completed;
+                counters[2].innerText = pending;
+            }
+        }
+
+        function filterTransactions(status) {
+            currentFilter = status;
+            
+            ['All', 'Completed', 'Pending', 'Rejected'].forEach(s => {
+                const btn = document.getElementById(`filter-${s.toLowerCase()}`);
+                if(btn) {
+                    if(s === status) {
+                        btn.className = "px-4 py-2 bg-[#dfcaa0] text-black font-extrabold rounded-full";
+                    } else {
+                        btn.className = "px-4 py-2 bg-[#181818] border border-gray-800 text-gray-400 rounded-full";
+                    }
+                }
+            });
+
+            renderFilteredTransactions(status);
+        }
+
+        function renderFilteredTransactions(status) {
+            const list = document.getElementById("userTxnList");
+            let filtered = allUserOrders;
+
+            if(status === 'Completed') {
+                filtered = allUserOrders.filter(d => d.status === "Approved");
+            } else if(status === 'Pending') {
+                filtered = allUserOrders.filter(d => d.status === "Pending");
+            } else if(status === 'Rejected') {
+                filtered = allUserOrders.filter(d => d.status === "Rejected");
+            }
+
+            if(filtered.length === 0) {
+                list.innerHTML = `<div class="bg-[#181818] p-4 rounded-xl text-center text-xs text-gray-400">No transactions found for this filter.</div>`;
+                return;
+            }
+
+            let html = "";
+            filtered.forEach(d => {
+                let statusColor = "text-amber-400 bg-amber-400/10 border-amber-400/20";
+                let displayStatus = d.status || "Pending";
+                if(d.status === "Approved") {
+                    statusColor = "text-emerald-400 bg-emerald-400/10 border-emerald-400/20";
+                    displayStatus = "Approved";
+                }
+                if(d.status === "Rejected") {
+                    statusColor = "text-red-400 bg-red-400/10 border-red-400/20";
+                    displayStatus = "Rejected";
+                }
+
+                html += `
+                <div class="bg-[#181818] border border-gray-800 p-4 rounded-2xl space-y-2">
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="font-bold text-gray-300">USDT: ${d.usdtAmount} (${d.network})</span>
+                        <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold border ${statusColor}">${displayStatus}</span>
+                    </div>
+                    <div class="text-[11px] text-gray-400 font-mono">UTR: ${d.utr}</div>
+                    <div class="text-[10px] text-gray-500">Wallet: ${d.walletAddress}</div>
+                </div>`;
+            });
+            list.innerHTML = html;
         }
 
         function logoutUser() {
@@ -814,3 +882,4 @@
     </script>
 </body>
 </html>
+
