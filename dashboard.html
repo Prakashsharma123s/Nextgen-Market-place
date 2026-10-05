@@ -289,7 +289,7 @@
                                 <span class="text-yellow-600 font-bold">●</span> <span>BEP20</span>
                             </button>
                         </div>
-                        <div class="text-[11px] text-gray-700">Network fee: 1 USDT · You receive <span id="receiveAmount" class="font-bold">0.00</span> USDT</div>
+                        <div class="text-[11px] text-gray-700">Network fee: <span id="networkFeeDisplay">1.00 USDT</span> · You receive <span id="receiveAmount" class="font-bold">0.00</span> USDT</div>
                     </div>
                 </div>
 
@@ -649,7 +649,7 @@
             document.getElementById('receiveAmount').innerText = (val > 1 ? val - 1 : 0).toFixed(2);
         }
 
-        function selectNetwork(net) {
+                function selectNetwork(net) {
             selectedNetworkType = net;
             if(net === 'TRC20') {
                 document.getElementById('net-trc').className = "p-3 border-2 border-black rounded-xl font-bold text-xs flex items-center justify-center space-x-2 bg-white";
@@ -658,9 +658,27 @@
                 document.getElementById('net-bep').className = "p-3 border-2 border-black rounded-xl font-bold text-xs flex items-center justify-center space-x-2 bg-white";
                 document.getElementById('net-trc').className = "p-3 border border-gray-400 rounded-xl font-bold text-xs flex items-center justify-center space-x-2 bg-white/60";
             }
+            calculateINR();
         }
 
-                        async function nextStep() {
+        function calculateINR() {
+            const val = parseFloat(document.getElementById('usdtInput').value) || 0;
+            const totalINR = val * liveRate;
+            document.getElementById('inrOutput').innerText = '₹' + totalINR.toLocaleString('en-IN');
+            document.getElementById('payFinalINR').innerText = '₹' + totalINR.toLocaleString('en-IN');
+
+            let fee = selectedNetworkType === 'TRC20' ? 1.00 : 0.20;
+            let receive = val > fee ? val - fee : 0;
+
+            document.getElementById('receiveAmount').innerText = receive.toFixed(2);
+            
+            const feeDisplay = document.getElementById('networkFeeDisplay');
+            if(feeDisplay) {
+                feeDisplay.innerText = fee.toFixed(2) + ' USDT';
+            }
+        }
+
+        async function nextStep() {
             const usdtVal = parseFloat(document.getElementById('usdtInput').value) || 0;
             if (currentStep === 1) {
                 if (usdtVal < minOrderLimit) {
@@ -763,7 +781,7 @@
             }
         }
 
-                let allUserOrders = [];
+        let allUserOrders = [];
         let currentFilter = 'All';
 
         async function fetchUserTransactions(phone) {
