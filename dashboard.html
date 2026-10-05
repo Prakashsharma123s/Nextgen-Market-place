@@ -672,7 +672,6 @@
             const totalINR = val * liveRate;
             document.getElementById('inrOutput').innerText = '₹' + totalINR.toLocaleString('en-IN');
             document.getElementById('payFinalINR').innerText = '₹' + totalINR.toLocaleString('en-IN');
-document.getElementById('step3ReceiveAmount').innerText = receive.toFixed(2);
 
 
             let fee = selectedNetworkType === 'TRC20' ? 1.00 : 0.20;
