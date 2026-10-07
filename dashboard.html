@@ -311,18 +311,18 @@
                         <div class="text-2xl font-black text-black" id="payFinalINR">₹0</div>
                     </div>
                 </div>
+    <div id="wizard-step-3" class="bg-[#dfcaa0] text-black rounded-t-3xl p-6 pt-8 space-y-4 shadow-2xl relative scalloped-top hidden">
+        <h2 class="text-xl font-black">Where should USDT land?</h2>
+        <p class="text-xs text-gray-800 font-medium">Choose your own wallet, or hold it in your StakedX wallet and withdraw whenever you like.</p>
+        <div class="grid grid-cols-2 gap-3">
+            <button class="p-3 bg-white border-2 border-black rounded-xl font-extrabold text-xs text-center shadow">My own wallet</button>
+            <button class="p-3 bg-white/60 border border-gray-400 rounded-xl font-bold text-xs text-center">StakedX Wallet</button>
+        </div>
+        <div class="space-y-1">
+            <label id="walletLabel" class="text-[10px] font-black text-gray-700 uppercase">Wallet Address (TRC20)</label>
+            <input type="text" id="walletAddressInput" placeholder="Enter your TRC20 wallet address" class="w-full p-3.5 bg-white border border-gray-300 rounded-xl text-xs font-mono font-bold text-black focus:outline-none">
+        </div>
 
-                <div id="wizard-step-3" class="bg-[#dfcaa0] text-black rounded-t-3xl p-6 pt-8 space-y-4 shadow-2xl relative scalloped-top hidden">
-    <h2 class="text-xl font-black">Where should USDT land?</h2>
-    <p class="text-xs text-gray-800 font-medium">Choose your own wallet, or hold it in your StakedX wallet and withdraw whenever you like.</p>
-    <div class="grid grid-cols-2 gap-3">
-        <button class="p-3 bg-white border-2 border-black rounded-xl font-extrabold text-xs text-center shadow">My own wallet</button>
-        <button class="p-3 bg-white/60 border border-gray-400 rounded-xl font-bold text-xs text-center">StakedX Wallet</button>
-    </div>
-    <div class="space-y-1">
-        <label class="text-[10px] font-black text-gray-700 uppercase">Wallet Address (TRC20)</label>
-        <input type="text" id="walletAddressInput" placeholder="Enter your TRC20 wallet address" class="w-full p-3.5 bg-white border border-gray-300 rounded-xl text-xs font-mono font-bold text-black focus:outline-none">
-    </div>
 
     <!-- Naya Extra Box: Kitna USDT receive hoga -->
     <div class="bg-[#f0e6d2] p-4 rounded-xl border border-amber-900/10 space-y-1">
@@ -656,7 +656,7 @@
             document.getElementById('receiveAmount').innerText = (val > 1 ? val - 1 : 0).toFixed(2);
         }
 
-                function selectNetwork(net) {
+                        function selectNetwork(net) {
             selectedNetworkType = net;
             if(net === 'TRC20') {
                 document.getElementById('net-trc').className = "p-3 border-2 border-black rounded-xl font-bold text-xs flex items-center justify-center space-x-2 bg-white";
@@ -665,8 +665,16 @@
                 document.getElementById('net-bep').className = "p-3 border-2 border-black rounded-xl font-bold text-xs flex items-center justify-center space-x-2 bg-white";
                 document.getElementById('net-trc').className = "p-3 border border-gray-400 rounded-xl font-bold text-xs flex items-center justify-center space-x-2 bg-white/60";
             }
+            
+            // 🟢 Yaha dynamic label aur placeholder update hoga
+            const label = document.getElementById('walletLabel');
+            const input = document.getElementById('walletAddressInput');
+            if(label) label.innerText = `Wallet Address (${net})`;
+            if(input) input.placeholder = `Enter your ${net} wallet address`;
+
             calculateINR();
         }
+
 
                 function calculateINR() {
             const val = parseFloat(document.getElementById('usdtInput').value) || 0;
