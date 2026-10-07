@@ -633,7 +633,8 @@ async function loginUser() {
             localStorage.setItem("user", phone);
             showAlert("Login Successful! Redirecting...", "success");
             setTimeout(() => {
-                window.location.href = "dashboard.html"; 
+                window.location.href = "/dashboard";
+
             }, 1000);
         } else {
             showAlert("Wrong Phone Number or Password!", "error");
