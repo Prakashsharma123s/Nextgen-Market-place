@@ -294,23 +294,49 @@
                 </div>
 
                 <div id="wizard-step-2" class="bg-[#dfcaa0] text-black rounded-t-3xl p-6 pt-8 space-y-4 shadow-2xl relative scalloped-top hidden">
-                    <h2 class="text-xl font-black">Pay via UPI</h2>
-                    <p class="text-xs text-gray-800 font-medium">Pay the exact amount below to our published UPI ID.</p>
-                    <div class="bg-white/70 p-3 rounded-lg text-xs font-medium text-gray-800">
-                        Pay from your own bank account only — third-party payments can't be matched to your order.
-                    </div>
-                    <div class="space-y-1">
-                        <label class="text-[10px] font-black text-gray-700 uppercase">UPI ID</label>
-                        <div class="flex items-center bg-white border border-gray-300 rounded-xl p-3">
-                            <input type="text" id="displayUpiId" readonly value="Loading..." class="w-full bg-transparent font-mono text-sm font-extrabold text-black focus:outline-none">
-                            <button onclick="copyUpiId()" class="bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer">Copy</button>
-                        </div>
-                    </div>
-                    <div class="bg-[#f0e6d2] p-4 rounded-xl">
-                        <div class="text-[10px] uppercase font-bold text-gray-600">Amount to pay</div>
-                        <div class="text-2xl font-black text-black" id="payFinalINR">₹0</div>
-                    </div>
-                </div>
+    <h2 class="text-xl font-black">Payment Details</h2>
+    <p class="text-xs text-gray-800 font-medium">Pay the exact amount via UPI ID or directly to the Bank Account below.</p>
+    <div class="bg-white/70 p-3 rounded-lg text-xs font-medium text-gray-800">
+        Pay from your own bank account only — third-party payments can't be matched to your order.
+    </div>
+    
+    <!-- UPI ID BOX -->
+    <div class="space-y-1">
+        <label class="text-[10px] font-black text-gray-700 uppercase">UPI ID</label>
+        <div class="flex items-center bg-white border border-gray-300 rounded-xl p-3">
+            <input type="text" id="displayUpiId" readonly value="Loading..." class="w-full bg-transparent font-mono text-sm font-extrabold text-black focus:outline-none">
+            <button onclick="copyFieldText('displayUpiId', 'UPI ID copied!')" class="bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer">Copy</button>
+        </div>
+    </div>
+
+    <!-- BANK ACCOUNT DETAILS BOX -->
+    <div class="bg-white/80 p-4 rounded-xl space-y-2.5 text-xs font-semibold text-gray-900 border border-gray-300">
+        <div class="text-[10px] font-black uppercase text-gray-600 tracking-wider mb-1">Or Bank Account Transfer</div>
+        
+        <div class="flex justify-between items-center border-b border-gray-200 pb-1.5">
+            <span>Bank: <strong id="displayBankName" class="font-mono">Loading...</strong></span>
+            <button onclick="copyFieldText('displayBankName', 'Bank Name copied!')" class="text-[11px] bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded font-bold">Copy</button>
+        </div>
+        <div class="flex justify-between items-center border-b border-gray-200 pb-1.5">
+            <span>A/C No: <strong id="displayAccNo" class="font-mono">Loading...</strong></span>
+            <button onclick="copyFieldText('displayAccNo', 'Account Number copied!')" class="text-[11px] bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded font-bold">Copy</button>
+        </div>
+        <div class="flex justify-between items-center border-b border-gray-200 pb-1.5">
+            <span>IFSC: <strong id="displayIfsc" class="font-mono">Loading...</strong></span>
+            <button onclick="copyFieldText('displayIfsc', 'IFSC Code copied!')" class="text-[11px] bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded font-bold">Copy</button>
+        </div>
+        <div class="flex justify-between items-center">
+            <span>Name: <strong id="displayAccName" class="font-mono">Loading...</strong></span>
+            <button onclick="copyFieldText('displayAccName', 'Account Name copied!')" class="text-[11px] bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded font-bold">Copy</button>
+        </div>
+    </div>
+
+    <div class="bg-[#f0e6d2] p-4 rounded-xl">
+        <div class="text-[10px] uppercase font-bold text-gray-600">Amount to pay</div>
+        <div class="text-2xl font-black text-black" id="payFinalINR">₹0</div>
+    </div>
+</div>
+
     <div id="wizard-step-3" class="bg-[#dfcaa0] text-black rounded-t-3xl p-6 pt-8 space-y-4 shadow-2xl relative scalloped-top hidden">
         <h2 class="text-xl font-black">Where should USDT land?</h2>
         <p class="text-xs text-gray-800 font-medium">Choose your own wallet, or hold it in your StakedX wallet and withdraw whenever you like.</p>
@@ -557,56 +583,51 @@
         };
 
         async function fetchGlobalSettings() {
-            try {
-                const doc = await db.collection("settings").doc("global").get();
-                if (doc.exists) {
-                    const data = doc.data();
-                    if(data.rate) {
-                        liveRate = data.rate;
-                        document.getElementById("displayRate").innerText = liveRate.toFixed(2);
-                        document.getElementById("wizardRate").innerText = liveRate.toFixed(2);
-                    }
-                    if(data.minWithdrawal) {
-                        document.getElementById("displayMinWithdrawal").innerText = data.minWithdrawal;
-                    }
-                    if(data.maxWithdrawal) {
-                        document.getElementById("displayMaxWithdrawal").innerText = data.maxWithdrawal;
-                    }
-                    if(data.minOrder) {
-                        minOrderLimit = data.minOrder;
-                        document.getElementById("displayMinOrder").innerText = minOrderLimit;
-                    }
-                    if(data.upi) {
-                        adminUpiId = data.upi;
-                        document.getElementById("displayUpiId").value = adminUpiId;
-                    }
-                    if(data.telegram) {
-                        telegramSupportLink = data.telegram;
-                    }
-                }
-            } catch(e) {}
-        }
+    try {
+        const doc = await db.collection("settings").doc("global").get();
+        if (doc.exists) {
+            const data = doc.data();
+            if(data.rate) {
+                liveRate = data.rate;
+                document.getElementById("displayRate").innerText = liveRate.toFixed(2);
+                document.getElementById("wizardRate").innerText = liveRate.toFixed(2);
+            }
+            if(data.minWithdrawal) {
+                document.getElementById("displayMinWithdrawal").innerText = data.minWithdrawal;
+            }
+            if(data.maxWithdrawal) {
+                document.getElementById("displayMaxWithdrawal").innerText = data.maxWithdrawal;
+            }
+            if(data.minOrder) {
+                minOrderLimit = data.minOrder;
+                document.getElementById("displayMinOrder").innerText = minOrderLimit;
+            }
+            if(data.upi) {
+                adminUpiId = data.upi;
+                document.getElementById("displayUpiId").value = adminUpiId;
+            }
+            
+            // 🟢 Bank details binding
+            if(data.bankName) document.getElementById("displayBankName").innerText = data.bankName;
+            if(data.accNo) document.getElementById("displayAccNo").innerText = data.accNo;
+            if(data.ifsc) document.getElementById("displayIfsc").innerText = data.ifsc;
+            if(data.accName) document.getElementById("displayAccName").innerText = data.accName;
 
-                function openTelegramSupport() {
-            if(telegramSupportLink) {
-                let formattedLink = telegramSupportLink.trim();
-                // Agar link mein http ya https nahi hai, toh automatic https:// jod dega
-                if (!formattedLink.startsWith('http://') && !formattedLink.startsWith('https://')) {
-                    formattedLink = 'https://' + formattedLink;
-                }
-                window.open(formattedLink, '_blank');
-            } else {
-                alert("Support link not available");
+            if(data.telegram) {
+                telegramSupportLink = data.telegram;
             }
         }
+    } catch(e) {}
+}
 
+// 🟢 Universal Copy Function for both inputs and text elements
+function copyFieldText(elementId, successMsg) {
+    const el = document.getElementById(elementId);
+    let textToCopy = el.value || el.innerText;
+    navigator.clipboard.writeText(textToCopy);
+    alert(successMsg);
+}
 
-        function copyUpiId() {
-            const upiField = document.getElementById("displayUpiId");
-            upiField.select();
-            navigator.clipboard.writeText(upiField.value);
-            alert("UPI ID copied successfully!");
-        }
 
         async function fetchUserData(phone) {
             try {
