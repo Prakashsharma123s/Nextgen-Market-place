@@ -13,7 +13,7 @@
         
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #f8fafc;
+            background-color: #fcfbf9;
             color: #0f172a;
             overflow-x: hidden;
             margin: 0;
@@ -73,10 +73,10 @@
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900 flex justify-center min-h-screen relative">
+<body class="bg-[#fcfbf9] text-slate-900 flex justify-center min-h-screen relative">
 
-    <!-- STRICT AUTH & LOADING OVERLAY -->
-    <div id="loader-overlay" class="fixed inset-0 bg-white/95 backdrop-blur-md z-[100] flex flex-col items-center justify-center space-y-6 transition-opacity duration-700">
+    <!-- STRICT SESSION AUTH & LOADING OVERLAY -->
+    <div id="loader-overlay" class="fixed inset-0 bg-[#fcfbf9]/95 backdrop-blur-md z-[100] flex flex-col items-center justify-center space-y-6 transition-opacity duration-700">
         <div class="relative">
             <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-sky-600 to-emerald-500 flex items-center justify-center shadow-2xl animate-bounce">
                 <span class="text-2xl text-white font-black">₮</span>
@@ -85,7 +85,7 @@
         </div>
         <div class="space-y-2 text-center">
             <h2 class="text-xl font-black tracking-tight text-slate-900">Tether Trade Institutional</h2>
-            <p class="text-xs text-slate-500 font-mono tracking-widest uppercase">Validating Session &amp; Node...</p>
+            <p class="text-xs text-slate-500 font-mono tracking-widest uppercase">Validating Secure Session...</p>
         </div>
         <div class="w-48 h-2 rounded-full overflow-hidden skeleton-shimmer"></div>
     </div>
@@ -159,11 +159,11 @@
                         <div class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Verified users</div>
                     </div>
                     <div class="border-x border-slate-200">
-                        <div class="text-lg font-black text-slate-900">₹210Cr+</div>
-                        <div class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Settled</div>
+                        <div class="text-lg font-black text-slate-900">2L+</div>
+                        <div class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Settled deals</div>
                     </div>
                     <div>
-                        <div class="text-lg font-black text-slate-900">4.8/5</div>
+                        <div class="text-lg font-black text-slate-900">4.9/5</div>
                         <div class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Rating</div>
                     </div>
                 </div>
@@ -568,7 +568,7 @@
         let currentTxnFilter = 'All';
 
         window.onload = async function() {
-            // STRICT AUTH CHECK: Redirect to index.html if user is not logged in via localStorage
+            // STRICT SESSION AUTH CHECK: Redirect to index.html if user is not logged in via localStorage
             const loggedInUserPhone = localStorage.getItem("user");
             if (!loggedInUserPhone) {
                 window.location.href = "index.html";
@@ -610,7 +610,7 @@
                     }
                     if(data.telegram) telegramSupportLink = data.telegram;
                     
-                    // Dynamic QR Code loading from Firestore settings
+                    // Dynamic QR Code loading from Firebase
                     if(data.qrCode) {
                         const qrContainer = document.getElementById("adminQrContainer");
                         if(qrContainer) {
