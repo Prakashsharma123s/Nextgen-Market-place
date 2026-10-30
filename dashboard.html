@@ -42,21 +42,21 @@
             animation: shine 4s linear infinite;
         }
         
-        /* Animated Shining Card Effect */
+        /* Animated VIP Shining Card Effect */
         .shining-card {
             position: relative;
             overflow: hidden;
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
-            border: 1px solid rgba(56, 189, 248, 0.3);
-            box-shadow: 0 20px 40px -10px rgba(2, 132, 199, 0.2);
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            box-shadow: 0 20px 40px -10px rgba(2, 132, 199, 0.25);
         }
         .shining-card::after {
             content: '';
             position: absolute;
             top: -50%; left: -50%; width: 200%; height: 200%;
-            background: linear-gradient(60deg, transparent 40%, rgba(255, 255, 255, 0.1) 50%, transparent 60%);
+            background: linear-gradient(60deg, transparent 40%, rgba(255, 255, 255, 0.15) 50%, transparent 60%);
             transform: rotate(30deg);
-            animation: cardShine 4s linear infinite;
+            animation: cardShine 3.5s linear infinite;
         }
         @keyframes cardShine {
             0% { transform: translateX(-100%) rotate(30deg); }
@@ -66,7 +66,7 @@
         /* QR Code Blink Animation every 1.5 seconds */
         @keyframes qrBlink {
             0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.65; transform: scale(0.98); }
+            50% { opacity: 0.6; transform: scale(0.97); }
         }
         .animate-qr-blink {
             animation: qrBlink 1.5s ease-in-out infinite;
@@ -75,12 +75,12 @@
         /* UPI Box Shake Animation every 2 seconds */
         @keyframes upiShake {
             0%, 100% { transform: translateX(0); }
-            15% { transform: translateX(-4px); }
-            30% { transform: translateX(4px); }
-            45% { transform: translateX(-3px); }
-            60% { transform: translateX(3px); }
-            75% { transform: translateX(-1px); }
-            90% { transform: translateX(1px); }
+            15% { transform: translateX(-5px); }
+            30% { transform: translateX(5px); }
+            45% { transform: translateX(-4px); }
+            60% { transform: translateX(4px); }
+            75% { transform: translateX(-2px); }
+            90% { transform: translateX(2px); }
         }
         .animate-upi-shake {
             animation: upiShake 2s ease-in-out infinite;
@@ -598,7 +598,7 @@
         let networkFee = 1.00;
         let liveRate = 91.45;
         let adminUpiId = "9196463267@ptycs";
-        let telegramSupportLink = "https://t.me/tethertrade_support";
+        let telegramSupportLink = "https://t.me/Tetherguard7s";
         let minOrderLimit = 20;
         let paymentTimerInterval = null;
         let paymentTimerSeconds = 540;
@@ -646,7 +646,16 @@
                         adminUpiId = data.upi;
                         document.getElementById("displayUpiId").value = adminUpiId;
                     }
-                    if(data.telegram) telegramSupportLink = data.telegram;
+                    if(data.telegram) {
+                        let tg = data.telegram.trim();
+                        if (tg.startsWith('@')) {
+                            telegramSupportLink = "https://t.me/" + tg.substring(1);
+                        } else if (!tg.startsWith('http://') && !tg.startsWith('https://')) {
+                            telegramSupportLink = "https://" + tg;
+                        } else {
+                            telegramSupportLink = tg;
+                        }
+                    }
                     
                     if(data.qrCode) {
                         const qrContainer = document.getElementById("adminQrContainer");
