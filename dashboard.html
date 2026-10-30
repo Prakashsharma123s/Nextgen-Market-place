@@ -42,17 +42,48 @@
             animation: shine 4s linear infinite;
         }
         
-        .shining-border {
+        /* Animated Shining Card Effect */
+        .shining-card {
             position: relative;
             overflow: hidden;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            box-shadow: 0 20px 40px -10px rgba(2, 132, 199, 0.2);
         }
-        .shining-border::after {
+        .shining-card::after {
             content: '';
             position: absolute;
-            top: 0; right: 0; bottom: 0; left: 0;
-            background: linear-gradient(90deg, transparent, rgba(2, 132, 199, 0.15), transparent);
-            transform: translateX(-100%);
-            animation: shimmer 3s infinite;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: linear-gradient(60deg, transparent 40%, rgba(255, 255, 255, 0.1) 50%, transparent 60%);
+            transform: rotate(30deg);
+            animation: cardShine 4s linear infinite;
+        }
+        @keyframes cardShine {
+            0% { transform: translateX(-100%) rotate(30deg); }
+            100% { transform: translateX(100%) rotate(30deg); }
+        }
+
+        /* QR Code Blink Animation every 1.5 seconds */
+        @keyframes qrBlink {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.65; transform: scale(0.98); }
+        }
+        .animate-qr-blink {
+            animation: qrBlink 1.5s ease-in-out infinite;
+        }
+
+        /* UPI Box Shake Animation every 2 seconds */
+        @keyframes upiShake {
+            0%, 100% { transform: translateX(0); }
+            15% { transform: translateX(-4px); }
+            30% { transform: translateX(4px); }
+            45% { transform: translateX(-3px); }
+            60% { transform: translateX(3px); }
+            75% { transform: translateX(-1px); }
+            90% { transform: translateX(1px); }
+        }
+        .animate-upi-shake {
+            animation: upiShake 2s ease-in-out infinite;
         }
 
         @keyframes slideText {
@@ -93,7 +124,7 @@
     <!-- MAIN APP CONTAINER -->
     <div class="w-full md:max-w-3xl lg:max-w-4xl max-w-md bg-white flex flex-col justify-between relative shadow-2xl border-x border-slate-200 pb-24 min-h-screen">
         
-        <!-- HEADER -->
+        <!-- HEADER WITH LOGO BRANDING -->
         <header class="flex justify-between items-center px-4 py-3.5 border-b border-slate-200 bg-white/95 backdrop-blur-md sticky top-0 z-50 shadow-xs">
             <div class="flex items-center space-x-2.5">
                 <div class="bg-gradient-to-tr from-sky-600 to-emerald-500 p-2 rounded-xl flex items-center justify-center shadow-md shadow-sky-500/20">
@@ -153,14 +184,15 @@
                     <button onclick="switchTab('faq')" class="w-full py-3.5 bg-white border border-slate-300 hover:border-slate-400 text-slate-700 font-bold rounded-2xl text-center text-sm transition shadow-xs">See how it works</button>
                 </div>
 
+                <!-- METRICS CARD WITH 4.9/5 RATING & SETTLED 2L+ DEALS -->
                 <div class="grid grid-cols-3 gap-3 bg-white p-4 rounded-3xl border border-slate-200 text-center shadow-md">
                     <div>
-                        <div class="text-lg font-black text-slate-900">65,000+</div>
-                        <div class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Verified users</div>
+                        <div class="text-lg font-black text-slate-900">80,000+</div>
+                        <div class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Verified Users</div>
                     </div>
                     <div class="border-x border-slate-200">
                         <div class="text-lg font-black text-slate-900">2L+</div>
-                        <div class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Settled deals</div>
+                        <div class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Settled Deals</div>
                     </div>
                     <div>
                         <div class="text-lg font-black text-slate-900">4.9/5</div>
@@ -168,8 +200,8 @@
                     </div>
                 </div>
 
-                <!-- LIVE RATE CARD -->
-                <div class="bg-gradient-to-br from-slate-900 to-slate-800 text-white rounded-3xl p-6 relative shadow-xl overflow-hidden shining-border">
+                <!-- ANIMATED SHINING LIVE RATE CARD -->
+                <div class="shining-card text-white rounded-3xl p-6 relative shadow-xl overflow-hidden">
                     <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-sky-500/10 rounded-full blur-2xl pointer-events-none"></div>
                     <div class="flex justify-between items-center text-xs font-bold uppercase tracking-wider text-sky-400 mb-2">
                         <span>Live Institutional Rate</span>
@@ -190,11 +222,16 @@
                     <button onclick="switchTab('buy')" class="w-full py-3.5 bg-white text-slate-900 hover:bg-slate-100 font-extrabold rounded-2xl text-sm shadow-lg">Buy USDT now</button>
                 </div>
 
-                <!-- FOOTER -->
+                <!-- PROFESSIONAL FOOTER WITH LOGO BRANDING -->
                 <footer class="pt-6 pb-4 border-t border-slate-200 space-y-6 text-slate-500 text-xs">
-                    <div class="flex items-center space-x-2">
-                        <div class="bg-sky-600 text-white p-1 rounded-lg font-black text-xs">₮</div>
-                        <span class="font-black text-slate-900 text-base">Tether Trade Prime</span>
+                    <div class="flex items-center space-x-2.5">
+                        <div class="bg-gradient-to-tr from-sky-600 to-emerald-500 p-2 rounded-xl flex items-center justify-center shadow-md shadow-sky-500/20">
+                            <span class="text-sm font-black text-white">₮</span>
+                        </div>
+                        <div>
+                            <span class="font-black text-lg tracking-wider text-slate-900 block leading-tight">Tether Trade Prime</span>
+                            <span class="text-[9px] text-sky-600 font-mono tracking-widest uppercase font-bold">Institutional OTC</span>
+                        </div>
                     </div>
                     <p class="text-[11px] text-slate-500 leading-relaxed">India's most transparent institutional INR-to-USDT instant buying platform. Multi-chain automated settlement engine active 24/7.</p>
                     
@@ -224,7 +261,7 @@
                 </footer>
             </div>
 
-            <!-- BUY TAB (2-STEP WORKFLOW WITH 5 NETWORKS & ADMIN QR) -->
+            <!-- BUY TAB (2-STEP WORKFLOW WITH 5 NETWORKS & ANIMATED QR / SHAKE UPI) -->
             <div id="tab-buy" class="p-4 sm:p-6 space-y-6 hidden">
                 <div class="bg-white border border-slate-200 p-4 rounded-2xl flex justify-between items-center shadow-xs">
                     <span class="text-xs font-black uppercase tracking-wider text-slate-600">Live Institutional Rate</span>
@@ -297,7 +334,7 @@
                     </button>
                 </div>
 
-                <!-- STEP 2: ADMIN QR, 9-MIN TIMER, CHECKBOXES -->
+                <!-- STEP 2: FIRESTORE QR (1.5s BLINK) & UPI BOX (2s SHAKE) -->
                 <div id="buy-step-2" class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-6 shadow-xl hidden">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-200 pb-4">
                         <div>
@@ -311,12 +348,13 @@
                     </div>
 
                     <div class="flex flex-col items-center justify-center space-y-4 bg-slate-50 p-6 rounded-3xl border border-slate-200">
-                        <!-- Dynamic Admin QR Code container -->
-                        <div class="bg-white p-3 rounded-2xl shadow-md border-2 border-sky-500 w-48 h-48 flex items-center justify-center overflow-hidden" id="adminQrContainer">
+                        <!-- Dynamic Admin QR Code container with 1.5s Blink Animation -->
+                        <div class="bg-white p-3 rounded-2xl shadow-md border-2 border-sky-500 w-48 h-48 flex items-center justify-center overflow-hidden animate-qr-blink" id="adminQrContainer">
                             <span class="text-xs text-slate-400 font-mono">Loading Admin QR...</span>
                         </div>
                         
-                        <div class="w-full space-y-1">
+                        <!-- UPI ID UI Box with 2s Shake Animation -->
+                        <div class="w-full space-y-1 animate-upi-shake">
                             <label class="text-[10px] font-black text-slate-500 uppercase tracking-wider">Verified Merchant UPI ID</label>
                             <div class="flex items-center bg-white border border-slate-300 rounded-2xl p-3.5 shadow-xs gap-2">
                                 <input type="text" id="displayUpiId" readonly value="Loading..." class="w-full bg-transparent font-mono text-xs sm:text-sm font-black text-slate-900 focus:outline-none truncate">
@@ -369,7 +407,7 @@
                 </div>
             </div>
 
-            <!-- TXNS TAB (FIXED COUNTERS & FIRESTORE SYNC) -->
+            <!-- TXNS TAB (REAL-TIME FIRESTORE SYNC & COUNTERS) -->
             <div id="tab-txn" class="p-4 sm:p-6 space-y-6 hidden">
                 <div class="space-y-1">
                     <h1 class="text-2xl sm:text-3xl font-black text-slate-900">Transactions</h1>
@@ -427,7 +465,7 @@
                 </div>
             </div>
 
-            <!-- PROFILE TAB (WORKING TELEGRAM DESK BUTTON) -->
+            <!-- PROFILE TAB (WORKING TELEGRAM SUPPORT) -->
             <div id="tab-profile" class="p-4 sm:p-6 space-y-6 hidden">
                 <div class="text-center pt-2">
                     <h1 class="text-2xl sm:text-3xl font-black text-slate-900">Account Profile</h1>
@@ -498,7 +536,7 @@
 
     </div>
 
-    <!-- AI HELP SUPPORT FLOATING TOGGLE -->
+    <!-- FLOATING AI ASSISTANT -->
     <div class="fixed bottom-20 right-6 z-50">
         <button type="button" onclick="toggleAiSupport()" class="w-14 h-14 rounded-full bg-gradient-to-r from-sky-600 to-emerald-500 text-white shadow-2xl flex items-center justify-center transition transform hover:scale-105 shadow-sky-500/40 relative">
             <i class="fa-solid fa-robot text-xl"></i>
@@ -568,7 +606,7 @@
         let currentTxnFilter = 'All';
 
         window.onload = async function() {
-            // STRICT SESSION AUTH CHECK: Redirect to index.html if user is not logged in via localStorage
+            // STRICT FIREBASE SESSION VALIDATION CHECK
             const loggedInUserPhone = localStorage.getItem("user");
             if (!loggedInUserPhone) {
                 window.location.href = "index.html";
@@ -610,7 +648,6 @@
                     }
                     if(data.telegram) telegramSupportLink = data.telegram;
                     
-                    // Dynamic QR Code loading from Firebase
                     if(data.qrCode) {
                         const qrContainer = document.getElementById("adminQrContainer");
                         if(qrContainer) {
